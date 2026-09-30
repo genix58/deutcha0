@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Немецкий с нуля: 30 дней</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f4;--card:#fff;--ink:#14213d;--mute:#5d6b82;--line:#d6dce5;--acc:#c8102e;--gold:#f2b705;--ok:#1f8a5b;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1626;--card:#19233a;--ink:#eef1f7;--mute:#9aa8c2;--line:#2a3652;--acc:#ff5c72;--gold:#f2b705;--ok:#4cc58d}}
+:root[data-theme="dark"]{--bg:#0f1626;--card:#19233a;--ink:#eef1f7;--mute:#9aa8c2;--line:#2a3652;--acc:#ff5c72;--gold:#f2b705;--ok:#4cc58d}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:720px;margin:0 auto;padding:20px 16px 48px}
+h1,h2,.de{font-family:"Bricolage Grotesque",system-ui,sans-serif}
+h1{font-size:2rem;line-height:1.1;margin:8px 0 4px;font-weight:800}
+.sub{color:var(--mute);margin:0 0 16px}
+.flag{height:6px;border-radius:3px;background:linear-gradient(90deg,#111 33%,var(--acc) 33% 66%,var(--gold) 66%);margin-bottom:14px}
+.bar{height:10px;background:var(--line);border-radius:5px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+.stat{display:flex;justify-content:space-between;font-size:.9rem;color:var(--mute);margin:6px 0 16px}
+nav{display:flex;gap:6px;margin-bottom:16px;border-bottom:2px solid var(--line)}
+nav button{flex:1;background:none;border:0;padding:10px 4px;font:inherit;font-weight:600;color:var(--mute);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+nav button[aria-selected=true]{color:var(--ink);border-color:var(--acc)}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.wk{margin:22px 0 8px}
+.wk h2{font-size:1.2rem;margin:0}
+.wk p{margin:2px 0 0;color:var(--mute);font-size:.9rem}
+.day{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0;cursor:pointer}
+.day.today{border-color:var(--acc);border-width:2px}
+.day input{width:22px;height:22px;accent-color:var(--ok);margin-top:2px;flex:none}
+.day b{display:block}
+.day span{color:var(--mute);font-size:.92rem}
+.day.done b{text-decoration:line-through;color:var(--mute)}
+.tag{font-size:.75rem;background:var(--acc);color:#fff;border-radius:4px;padding:1px 6px;margin-left:6px;font-weight:600}
+.fc{background:var(--card);border:1px solid var(--line);border-radius:14px;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;cursor:pointer;width:100%;font:inherit;color:inherit}
+.fc .de{font-size:2.2rem;font-weight:700;margin:0}
+.fc small{color:var(--mute);margin-top:10px}
+.fc .ru{font-size:1.5rem;color:var(--acc);font-weight:600}
+.row{display:flex;gap:8px;margin-top:12px}
+.btn{flex:1;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-weight:600;cursor:pointer}
+.btn.pri{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.opts{display:grid;gap:8px;margin-top:14px}
+.opt.good{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opt.bad{background:var(--acc);color:#fff;border-color:var(--acc)}
+.meta{text-align:center;color:var(--mute);font-size:.9rem;margin:10px 0}
+.reset{margin-top:28px;background:none;border:0;color:var(--mute);text-decoration:underline;cursor:pointer;font:inherit}
+</style>
+</head>
+<body>
+<main>
+<div class="flag"></div>
+<h1>Deutsch von null</h1>
+<p class="sub">30 дней, около 30–40 минут в день. Уровень A0 → уверенный A1.</p>
+<div class="bar"><i id="pb"></i></div>
+<div class="stat"><span id="pt"></span><span id="pv"></span></div>
+<nav role="tablist">
+<button role="tab" aria-selected="true" data-t="plan">План</button>
+<button role="tab" aria-selected="false" data-t="cards">Карточки</button>
+<button role="tab" aria-selected="false" data-t="quiz">Тест</button>
+</nav>
+<section id="plan"></section>
+<section id="cards" hidden></section>
+<section id="quiz" hidden></section>
+<button class="reset" id="rs">Сбросить прогресс</button>
+</main>
+<script>
+const W=[
+["Неделя 1. Звуки и знакомство","Алфавит, произношение, приветствия, числа 0–10",[
+["Алфавит и ä ö ü ß","Прослушайте алфавит, произнесите своё имя по буквам."],
+["Чтение и ударение","Читайте вслух: ei, ie, eu, ch, sch, sp, st."],
+["Приветствия","Hallo, Guten Morgen/Tag/Abend, Tschüss. Проговорите по 5 раз."],
+["Вежливость","Danke, Bitte, Entschuldigung, Ja, Nein. Составьте 3 мини-диалога."],
+["Представьтесь","Ich heiße … Ich komme aus … Запишите текст о себе из 3 фраз."],
+["Числа 0–10","null, eins … zehn. Считайте предметы вокруг по-немецки."],
+["Повторение недели","Пройдите карточки и тест. Повторите фразы вслух."]]],
+["Неделя 2. Основа грамматики","Артикли, sein и haben, семья, вопросы",[
+["Род существительных","der / die / das. Всегда учите слово вместе с артиклем."],
+["Глагол sein","ich bin, du bist, er/sie/es ist, wir sind, ihr seid, sie sind."],
+["Глагол haben","ich habe, du hast, er hat… Фразы: Ich habe Hunger."],
+["Семья","Mutter, Vater, Kind, Bruder, Schwester. Расскажите о семье."],
+["Профессии","Ich bin Student/Lehrer/Ingenieur. Назовите 5 профессий."],
+["Вопросы W-Fragen","Wer? Was? Wo? Woher? Wie? Составьте по 1 вопросу."],
+["Повторение недели","Карточки, тест, короткий рассказ о себе и семье."]]],
+["Неделя 3. Повседневные глаголы","Настоящее время, еда, время, дни недели",[
+["Окончания глаголов","-e, -st, -t, -en, -t, -en. Спрягайте lernen и wohnen."],
+["Глаголы: machen, trinken","Ich trinke Kaffee. Ich mache Hausaufgaben. 5 своих предложений."],
+["Еда и напитки","das Brot, das Wasser, der Kaffee, die Milch, der Apfel."],
+["В кафе","Ich möchte … Die Rechnung, bitte. Разыграйте заказ."],
+["Числа 11–100","elf … zwanzig, dreißig … hundert. Назовите свой телефон."],
+["Дни недели и время","Montag–Sonntag, heute, morgen. Wie spät ist es?"],
+["Повторение недели","Карточки, тест, заказ в кафе без подсказок."]]],
+["Неделя 4. Жизнь в городе","Город, покупки, распорядок дня, итог",[
+["Город и места","die Stadt, der Bahnhof, die Schule, das Haus. Wo ist …?"],
+["Дорога","links, rechts, geradeaus. Спросите дорогу к вокзалу."],
+["Отрицание","nicht и kein. Ich habe keine Zeit. Ich komme nicht."],
+["Покупки","Wie viel kostet das? Das ist teuer/billig. Диалог в магазине."],
+["Распорядок дня","aufstehen, frühstücken, arbeiten. Опишите свой день."],
+["Мини-экзамен","Все карточки и тест без ошибок. Перескажите текст о себе."],
+["Итог и дальше","Запишите 1 минуту речи на немецком. Выберите цель на A1."]]]];
+const V=[["Hallo","привет"],["Guten Morgen","доброе утро"],["Guten Tag","добрый день"],["Guten Abend","добрый вечер"],["Tschüss","пока"],["Auf Wiedersehen","до свидания"],["Danke","спасибо"],["Bitte","пожалуйста"],["Ja","да"],["Nein","нет"],["Entschuldigung","извините"],["Ich heiße …","меня зовут …"],["Wie geht's?","как дела?"],["Ich komme aus …","я из …"],["der Mann","мужчина"],["die Frau","женщина"],["das Kind","ребёнок"],["die Mutter","мама"],["der Vater","папа"],["das Wasser","вода"],["das Brot","хлеб"],["der Kaffee","кофе"],["die Milch","молоко"],["der Apfel","яблоко"],["das Haus","дом"],["die Stadt","город"],["der Bahnhof","вокзал"],["die Schule","школа"],["eins","один"],["zwei","два"],["drei","три"],["vier","четыре"],["fünf","пять"],["zehn","десять"],["Montag","понедельник"],["heute","сегодня"],["morgen","завтра"],["ich bin","я есть"],["ich habe","у меня есть"],["ich möchte","я хотел(а) бы"],["links","налево"],["rechts","направо"],["geradeaus","прямо"],["teuer","дорогой"]];
+const $=s=>document.querySelector(s);
+let done={};const K="de-a0-v1";
+try{done=JSON.parse(localStorage.getItem(K)||"{}")}catch(e){}
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(done))}catch(e){}};
+let n=0;const days=[];
+W.forEach(w=>w[2].forEach(d=>days.push(d)));
+function renderPlan(){
+ const firstOpen=days.findIndex((_,i)=>!done[i]);let h="";n=0;
+ W.forEach(w=>{h+=`<div class="wk"><h2>${w[0]}</h2><p>${w[1]}</p></div>`;
+  w[2].forEach(d=>{const i=n++;const c=done[i];
+   h+=`<label class="day ${c?"done":""} ${i===firstOpen?"today":""}"><input type="checkbox" data-i="${i}" ${c?"checked":""}><div><b>День ${i+1}. ${d[0]}${i===firstOpen?'<span class="tag">сегодня</span>':""}</b><span>${d[1]}</span></div></label>`})});
+ $("#plan").innerHTML=h;
+ const k=Object.values(done).filter(Boolean).length;
+ $("#pb").style.width=k/30*100+"%";$("#pt").textContent=`Пройдено ${k} из 30 дней`;$("#pv").textContent=Math.round(k/30*100)+"%";
+}
+$("#plan").addEventListener("change",e=>{if(e.target.dataset.i!==undefined){done[e.target.dataset.i]=e.target.checked;save();renderPlan()}});
+/* Cards */
+let order=V.map((_,i)=>i),ci=0,flip=false,known=0;
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function renderCards(){
+ if(ci>=order.length){$("#cards").innerHTML=`<div class="fc" style="cursor:default"><p class="de">Колода пройдена</p><small>Вы знали ${known} из ${order.length}</small></div><div class="row"><button class="btn pri" id="again">Заново</button></div>`;
+  $("#again").onclick=()=>{order=shuffle(V.map((_,i)=>i));ci=0;known=0;flip=false;renderCards()};return}
+ const w=V[order[ci]];
+ $("#cards").innerHTML=`<div class="meta">Карточка ${ci+1} из ${order.length}</div><button class="fc" id="fc"><p class="de">${w[0]}</p>${flip?`<p class="ru">${w[1]}</p>`:"<small>Нажмите, чтобы увидеть перевод</small>"}</button>
+ <div class="row"><button class="btn" id="no">Ещё раз</button><button class="btn pri" id="yes">Знаю</button></div>`;
+ $("#fc").onclick=()=>{flip=true;renderCards()};
+ $("#yes").onclick=()=>{known++;ci++;flip=false;renderCards()};
+ $("#no").onclick=()=>{order.push(order[ci]);ci++;flip=false;renderCards()};
+}
+/* Quiz */
+let qs=0,qn=0,q=null;
+function nextQ(){
+ const a=V[Math.floor(Math.random()*V.length)];
+ const o=shuffle([a,...shuffle(V.filter(x=>x!==a)).slice(0,3)]);q={a,o};renderQ();
+}
+function renderQ(){
+ $("#quiz").innerHTML=`<div class="meta">Верно: ${qs} из ${qn}</div><div class="fc" style="cursor:default"><small>Что означает?</small><p class="de">${q.a[0]}</p></div><div class="opts">${q.o.map((x,i)=>`<button class="btn opt" data-i="${i}">${x[1]}</button>`).join("")}</div>`;
+}
+$("#quiz").addEventListener("click",e=>{
+ const b=e.target.closest(".opt");if(!b||b.disabled)return;
+ const ok=q.o[b.dataset.i]===q.a;qn++;if(ok)qs++;
+ document.querySelectorAll(".opt").forEach((x,i)=>{x.disabled=true;if(q.o[i]===q.a)x.classList.add("good")});
+ if(!ok)b.classList.add("bad");
+ $("#quiz .meta").textContent=`Верно: ${qs} из ${qn}`;
+ const nb=document.createElement("button");nb.className="btn pri";nb.style.marginTop="8px";nb.textContent="Дальше";nb.onclick=nextQ;$("#quiz .opts").append(nb);nb.focus();
+});
+/* Tabs */
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+ document.querySelectorAll("nav button").forEach(x=>x.setAttribute("aria-selected",x===b));
+ ["plan","cards","quiz"].forEach(t=>$("#"+t).hidden=t!==b.dataset.t);
+ if(b.dataset.t==="cards"){order=shuffle(V.map((_,i)=>i));ci=0;known=0;flip=false;renderCards()}
+ if(b.dataset.t==="quiz"){qs=0;qn=0;nextQ()}
+});
+$("#rs").onclick=()=>{if(confirm("Сбросить весь прогресс?")){done={};save();renderPlan()}};
+renderPlan();
+</script>
+</body>
+</html>
